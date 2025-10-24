@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { RegisterPage } from '../pages/registerPage'
+import TestData from '../data/testData.json'
 
 let registerPage: RegisterPage
 
@@ -21,7 +22,7 @@ test('TC-2 Verificar botón de registro esta deshabilitado por defecto', async (
 })
 
 test('TC-3 Verificar botón de registro se habilite al completar los campos obliagatorios', async ({ page }) => {
-  await registerPage.completarFormularioRegistro('Seba', 'Prueba', 'seba@mail.com', '123456')
+  await registerPage.completarFormularioRegistro(TestData.usuarioValido)
 
   await expect(registerPage.registerButton).toBeEnabled()
 })
@@ -32,22 +33,28 @@ test('TC-4 Verificar redireccionamiento a pagina de Inicio de sesión al hacer c
 })
 
 test.skip('TC-5 Verificar registro exitoso con datos válidos ', async ({ page }) => {
-  await registerPage.completarFormularioRegistro('Seba', 'Prueba', 'seba' + Date.now().toString() + '@mail.com', '123456')
+  //Modificamos el email del usuario que viene del json
+
+  const email = 'seba' + Date.now().toString()
+  TestData.usuarioValido.email = email
+  await registerPage.completarFormularioRegistro(TestData.usuarioValido)
   await registerPage.registerButton.click()
   await expect(page.getByText('Registro exitoso')).toBeVisible()
 })
 
 test.skip('TC-6 Verificar que un usuario no pueda registrarse con un correo ya existente', async ({ page }) => {
-  const email = 'seba' + Date.now().toString()
+  //Modificamos el email del usuario que viene del json
 
-  await registerPage.completarFormularioRegistro('Seba', 'Prueba', email, '123456')
+  const email = 'seba' + Date.now().toString()
+  TestData.usuarioValido.email = email
+  await registerPage.completarFormularioRegistro(TestData.usuarioValido)
   await registerPage.registerButton.click()
 
   await expect(page.getByText('Registro exitoso')).toBeVisible()
 
   await registerPage.visitarPaginaRegistro()
 
-  await registerPage.completarFormularioRegistro('Seba', 'Prueba', email, '123456')
+  await registerPage.completarFormularioRegistro(TestData.usuarioValido)
   await registerPage.registerButton.click()
 
   await expect(page.getByText('Email already in use')).toBeVisible()
