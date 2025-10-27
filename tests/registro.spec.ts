@@ -27,7 +27,7 @@ test('TC-3 Verificar botón de registro se habilite al completar los campos obli
   await expect(registerPage.registerButton).toBeEnabled()
 })
 
-test('TC-4 Verificar redireccionamiento a pagina de Inicio de sesión al hacer click', async ({ page }) => {
+test('TC-4 Verificar redireccionamiento a página de Inicio de sesión al hacer click', async ({ page }) => {
   await registerPage.loginButton.click()
   await expect(page).toHaveURL('http://localhost:3000/login')
 })
