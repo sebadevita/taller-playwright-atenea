@@ -33,9 +33,4 @@ export class RegisterPage {
   async clickearBotonRegistro() {
     await this.registerButton.click()
   }
-
-  async registrarUsuario(firstName: string, lastName: string, email: string, password: string) {
-    await this.completarFormularioRegistro(firstName, lastName, email, password)
-    await this.clickearBotonRegistro()
-  }
 }
