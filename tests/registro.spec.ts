@@ -61,3 +61,74 @@ test.skip('TC-6 Verificar que un usuario no pueda registrarse con un correo ya e
 
   await expect(page.getByText('Registro exitoso')).not.toBeVisible()
 })
+
+test.skip('TC-8 Verificar Registro exitoso verificando con respuesta de API', async ({ page }) => {
+  const email = 'seba' + Date.now().toString() + '@mail.com'
+  TestData.usuarioValido.email = email
+  await registerPage.completarFormularioRegistro(TestData.usuarioValido)
+
+  //Verificamos que la API signup responda 201
+
+  const responsePromise = page.waitForResponse('http://localhost:6007/api/auth/signup')
+  await registerPage.registerButton.click()
+  const response = await responsePromise
+
+  //Transformamos la respuesta a objeto json
+  const responseBody = await response.json()
+
+  expect(response.status()).toBe(201)
+
+  //Verificamos que el json de la response tenga la property token y user
+  expect(responseBody).toHaveProperty('token')
+  expect(responseBody).toHaveProperty('user')
+
+  //Verificamos que la property user tenga dentro el json con los atributos del user
+  expect(responseBody.user).toEqual(
+    expect.objectContaining({
+      id: expect.any(String),
+      firstName: TestData.usuarioValido.nombre,
+      lastName: TestData.usuarioValido.apellido,
+      email: TestData.usuarioValido.email,
+    })
+  )
+  await expect(page.getByText('Registro exitoso')).toBeVisible()
+})
+
+test.skip('TC-9 Registrar de usuario desde la API', async ({ request }) => {
+  const endpoint = 'http://localhost:6007/api/auth/signup'
+  const email = 'seba' + Date.now().toString() + '@mail.com'
+  const response = await request.post(endpoint, {
+    data: {
+      firstName: TestData.usuarioValido.nombre,
+      lastName: TestData.usuarioValido.apellido,
+      email: email,
+      password: TestData.usuarioValido.password,
+    },
+  })
+
+  const responseBody = await response.json()
+  expect(responseBody.user).toEqual(
+    expect.objectContaining({
+      id: expect.any(String),
+      firstName: TestData.usuarioValido.nombre,
+      lastName: TestData.usuarioValido.apellido,
+      email: TestData.usuarioValido.email,
+    })
+  )
+  expect(response.status()).toBe(201)
+})
+
+test('TC-10 Verificar comportamiento con error 500', async ({ page }) => {
+  //Interceptar la request
+  await page.route('http://localhost:6007/api/auth/signup', (route) => {
+    route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ messge: 'Internal Server Error' }),
+    })
+  })
+
+  await registerPage.completarFormularioRegistro(TestData.usuarioValido)
+  await registerPage.registerButton.click()
+  await expect(page.getByText('Registro fallido')).toBeVisible()
+})
