@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test'
 import { RegisterPage } from '../pages/registerPage'
 import TestData from '../data/testData.json'
+import { BackendUtils } from './utils/backendUtils'
 
 let registerPage: RegisterPage
+let backendUtils: BackendUtils
 
 test.beforeEach(async ({ page }) => {
   registerPage = new RegisterPage(page)
@@ -94,25 +96,21 @@ test.skip('TC-8 Verificar Registro exitoso verificando con respuesta de API', as
   await expect(page.getByText('Registro exitoso')).toBeVisible()
 })
 
-test.skip('TC-9 Registrar de usuario desde la API', async ({ request }) => {
-  const endpoint = 'http://localhost:6007/api/auth/signup'
-  const email = 'seba' + Date.now().toString() + '@mail.com'
-  const response = await request.post(endpoint, {
-    data: {
-      firstName: TestData.usuarioValido.nombre,
-      lastName: TestData.usuarioValido.apellido,
-      email: email,
-      password: TestData.usuarioValido.password,
-    },
-  })
-
+test.only('TC-9.1 Registrar de usuario desde la API', async ({ request }) => {
+  const userAPI = new BackendUtils(request)
+  const response = await userAPI.crearUsuarioAPI('http://localhost:6007/api/auth/signup', TestData.usuarioValido)
   const responseBody = await response.json()
-  expect(responseBody.user).toEqual(
+  console.log(responseBody)
+
+  expect(responseBody).toEqual(
     expect.objectContaining({
-      id: expect.any(String),
-      firstName: TestData.usuarioValido.nombre,
-      lastName: TestData.usuarioValido.apellido,
-      email: TestData.usuarioValido.email,
+      token: expect.any(String),
+      user: expect.objectContaining({
+        id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        email: expect.any(String),
+      }),
     })
   )
   expect(response.status()).toBe(201)
