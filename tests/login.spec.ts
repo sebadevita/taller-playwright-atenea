@@ -1,4 +1,4 @@
-import { test, Locator, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { LoginPage } from '../pages/loginPage'
 import { DashboardPage } from '../pages/dashboardPage'
 import TestData from '../data/testData.json'
