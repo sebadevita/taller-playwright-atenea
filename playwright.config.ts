@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
 
 /**
  * Read environment variables from file.
@@ -48,6 +48,11 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
+    //Creamos el proyecto 'setup' para que se avisible para PW en las ejecuciones
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
 
     /* Test against mobile viewports. */
     // {
@@ -76,4 +81,4 @@ export default defineConfig({
   //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
-});
+})
