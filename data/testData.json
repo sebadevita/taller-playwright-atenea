@@ -1,9 +1,15 @@
 {
-    "usuarioValido":{
-        "nombre": "Seba",
-        "apellido": "Prueba",
-        "email": "seba@prueba.com",
-        "password": "123456"
+  "usuarioValido": {
+    "nombre": "Seba",
+    "apellido": "Prueba",
+    "email": "seba@prueba.com",
+    "password": "123456"
+  },
 
-    }
+  "usuarioEmisor": {
+    "nombre": "Emisor",
+    "apellido": "Emisor",
+    "email": "emisor@mail.com",
+    "password": "123456"
+  }
 }

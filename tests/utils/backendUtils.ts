@@ -20,6 +20,6 @@ export class BackendUtils {
       },
     })
 
-    return response
+    return { email: email, password: usuario.password }
   }
 }

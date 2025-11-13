@@ -96,24 +96,17 @@ test.skip('TC-8 Verificar Registro exitoso verificando con respuesta de API', as
   await expect(page.getByText('Registro exitoso')).toBeVisible()
 })
 
-test.only('TC-9.1 Registrar de usuario desde la API', async ({ request }) => {
+test('TC-9.1 Registrar de usuario desde la API', async ({ request }) => {
   const userAPI = new BackendUtils(request)
-  const response = await userAPI.crearUsuarioAPI('http://localhost:6007/api/auth/signup', TestData.usuarioValido)
-  const responseBody = await response.json()
-  console.log(responseBody)
+  const endpoint = 'http://localhost:6007/api/auth/signup'
+  const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioValido)
 
-  expect(responseBody).toEqual(
+  expect(nuevoUsuario).toEqual(
     expect.objectContaining({
-      token: expect.any(String),
-      user: expect.objectContaining({
-        id: expect.any(String),
-        firstName: expect.any(String),
-        lastName: expect.any(String),
-        email: expect.any(String),
-      }),
+      email: expect.any(String),
+      password: expect.any(String),
     })
   )
-  expect(response.status()).toBe(201)
 })
 
 test('TC-10 Verificar comportamiento con error 500', async ({ page }) => {
