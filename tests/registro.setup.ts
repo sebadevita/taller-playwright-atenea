@@ -4,6 +4,8 @@ import { test as setup, expect } from '@playwright/test'
 import { BackendUtils } from './utils/backendUtils'
 import { LoginPage } from '../pages/loginPage'
 import TestData from '../data/testData.json'
+import fs from 'fs/promises'
+import path from 'path'
 
 let loginPage: LoginPage
 let dashboardPage: DashboardPage
@@ -11,6 +13,7 @@ let modalCrearCuenta: ModalCrearCuenta
 
 const usuarioEmisorAuthFile = 'playwright/.auth/usuarioEmisor.json'
 const usuarioReceptorAuthFile = 'playwright/.auth/usuarioReceptor.json'
+const usuarioEmisorDataFile = 'playwright/.auth/usuarioEmisor.data.json'
 
 setup.beforeEach(async ({ page }) => {
   loginPage = new LoginPage(page)
@@ -22,9 +25,12 @@ setup.beforeEach(async ({ page }) => {
 setup('Generar usuario que envia dinero', async ({ page, request }) => {
   const userAPI = new BackendUtils(request)
   const endpoint = 'http://localhost:6007/api/auth/signup'
-  const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioEmisor)
+  const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioValido)
 
-  console.log(nuevoUsuario)
+  //Guardamos los datos del nuevo usuario para tests de Transacciones en un archivo
+  //Primero se indica la ruta donde queremos guardar el archivo, luego que data queremos guardar
+
+  await fs.writeFile(path.resolve(__dirname, '..', usuarioEmisorDataFile), JSON.stringify(nuevoUsuario, null, 2))
 
   await loginPage.completarFormularioLogin(nuevoUsuario)
   await loginPage.clickLogin()
