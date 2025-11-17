@@ -9,9 +9,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     services:
-      image: mongo:6.0
-      ports: -27017:27017
+      mongo:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
 
     env:
       MONGO_URI: ${{secrets.MONGO_URI}}
