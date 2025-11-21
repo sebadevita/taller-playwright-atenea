@@ -44,8 +44,11 @@ setup('Generar usuario que envia dinero', async ({ page, request }) => {
   await page.context().storageState({ path: usuarioEmisorAuthFile })
 })
 
-setup('Loguearse con usuario que recibe dinero', async ({ page, request }) => {
-  await loginPage.completarFormularioLogin(TestData.usuarioValido)
+setup('Crear y loguearse con usuario que recibe dinero', async ({ page, request }) => {
+  const userAPI = new BackendUtils(request)
+  const endpoint = 'http://localhost:6007/api/auth/signup'
+  const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioValido, false)
+  await loginPage.completarFormularioLogin(nuevoUsuario)
   await loginPage.clickLogin()
   await expect(dashboardPage.dashboardTitle).toBeVisible()
   await page.context().storageState({ path: usuarioReceptorAuthFile })
