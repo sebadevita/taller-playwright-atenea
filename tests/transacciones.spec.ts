@@ -24,6 +24,7 @@ const testUsuarioReceptor = test.extend({
 testUsuarioEmisor('Verificar transacción exitosa', async ({ page }) => {
   await expect(dashboardPage.dashboardTitle).toBeVisible()
   await dashboardPage.botonEnviarDinero.click()
+  console.log('Modal enviar transferencia: ' + modalEnviarTransferencia.cuentaOrigenOption)
   await modalEnviarTransferencia.completarFormulario(TestData.usuarioValido.email, '250')
   await modalEnviarTransferencia.botonEnviar.click()
   await expect(page.getByText(`Transferencia enviada a ${TestData.usuarioValido.email}`)).toBeVisible()
