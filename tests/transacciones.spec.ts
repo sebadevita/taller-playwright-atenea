@@ -26,6 +26,8 @@ testUsuarioEmisor('Verificar transacción exitosa', async ({ page }) => {
   await dashboardPage.botonEnviarDinero.click()
   await modalEnviarTransferencia.completarFormulario(TestData.usuarioValido.email, '250')
   await expect(modalEnviarTransferencia.cuentaOrigenDropdown).toBeVisible()
+  console.log('CUENTA' + (await modalEnviarTransferencia.cuentaOrigenDropdown.textContent()))
+  await expect(modalEnviarTransferencia.cuentaOrigenOption).toBeVisible()
   await modalEnviarTransferencia.botonEnviar.click()
   await expect(page.getByText(`Transferencia enviada a ${TestData.usuarioValido.email}`)).toBeVisible()
 })
