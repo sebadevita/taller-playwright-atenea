@@ -14,6 +14,7 @@ test.beforeEach(async ({ page }) => {
 
 test('TC-7 Verificar inicio de sesion exitoso', async ({ page }) => {
   await loginPage.completarFormularioLogin(TestData.usuarioValido)
+  console.log(TestData.usuarioValido)
   await loginPage.clickLogin()
   await expect(page.getByText('Inicio de sesión exitoso')).toBeVisible()
   await expect(dashboardPage.dashboardTitle).toBeVisible()
