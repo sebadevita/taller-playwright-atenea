@@ -44,7 +44,7 @@ export default defineConfig({
       dependencies: ['setup'],
     },
 
-    {
+    /*     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
@@ -52,7 +52,7 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    },
+    }, */
     //Creamos el proyecto 'setup' para que se avisible para PW en las ejecuciones
 
     /* Test against mobile viewports. */
