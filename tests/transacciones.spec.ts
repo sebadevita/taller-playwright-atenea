@@ -23,12 +23,17 @@ const testUsuarioReceptor = test.extend({
 
 testUsuarioEmisor('Verificar transacción exitosa', async ({ page }) => {
   await expect(dashboardPage.dashboardTitle).toBeVisible()
+  console.log('DASHBOARD TITLE: ' + (await dashboardPage.dashboardTitle.textContent()))
   await dashboardPage.botonEnviarDinero.click()
+  console.log('BOTON ENVIAR DINERO: ' + (await dashboardPage.botonEnviarDinero.textContent()))
   await modalEnviarTransferencia.completarFormulario(TestData.usuarioValido.email, '250')
   await expect(modalEnviarTransferencia.cuentaOrigenDropdown).toBeVisible()
-  console.log('CUENTA' + (await modalEnviarTransferencia.cuentaOrigenDropdown.textContent()))
+  console.log('CUENTA ORIGEN DROPDOWN: ' + (await modalEnviarTransferencia.cuentaOrigenDropdown.textContent()))
   await expect(modalEnviarTransferencia.cuentaOrigenOption).toBeVisible()
+  console.log('CUENTA ORIGEN OPTION: ' + (await modalEnviarTransferencia.cuentaOrigenOption.textContent()))
   await modalEnviarTransferencia.botonEnviar.click()
+  console.log('BOTON ENVIAR TRANSFERENCIA: ' + (await modalEnviarTransferencia.botonEnviar.textContent()))
+
   await expect(page.getByText(`Transferencia enviada a ${TestData.usuarioValido.email}`)).toBeVisible()
 })
 
@@ -78,8 +83,6 @@ testUsuarioReceptor('Verificar transferencia recibida (Enviada por API)', async 
   const idCuentaOrigen = cuentas[0]._id
 
   const montoAleatorio = Math.floor(Math.random() * 100) + 1
-  console.log('Monto:' + montoAleatorio + 'desde' + idCuentaOrigen + 'a' + TestData.usuarioValido.email)
-
   //Enviamos la transferencia por API
 
   const responseTransferencia = await request.post('http://localhost:6007/api/transactions/transfer', {

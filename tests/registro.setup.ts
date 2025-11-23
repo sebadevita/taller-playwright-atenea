@@ -24,6 +24,7 @@ setup.beforeEach(async ({ page }) => {
 
 setup('Generar usuario que envia dinero', async ({ page, request }) => {
   const userAPI = new BackendUtils(request)
+  console.log('SE EJECUTA SETUP SE EJECUTA SETUP SE EJECUTA SETUP')
   const endpoint = 'http://localhost:6007/api/auth/signup'
   const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioValido)
 
