@@ -35,6 +35,10 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
@@ -50,10 +54,6 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
     //Creamos el proyecto 'setup' para que se avisible para PW en las ejecuciones
-    {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-    },
 
     /* Test against mobile viewports. */
     // {
