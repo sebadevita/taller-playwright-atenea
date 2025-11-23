@@ -77,7 +77,7 @@ jobs:
           cd tests
           npm install
           npx playwright install --with-deps
-          npx playwright test --reporter=html
+          npx playwright test --project=chromium --reporter=html
 
       - name: Guardar el reporte como artefactos de git
         if: always()
