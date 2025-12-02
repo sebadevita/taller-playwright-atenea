@@ -27,7 +27,7 @@ testUsuarioEmisor('Verificar transacción exitosa', async ({ page }) => {
   await modalEnviarTransferencia.completarFormulario(TestData.usuarioValido.email, '250')
   await expect(modalEnviarTransferencia.cuentaOrigenDropdown).toBeVisible()
   await expect(modalEnviarTransferencia.cuentaOrigenOption).toBeVisible()
-  console.log('CUENTA ORIGEN DROPDOWN', modalEnviarTransferencia.cuentaOrigenDropdown)
+  console.log('CUENTA ORIGEN DROPDOWN', await modalEnviarTransferencia.cuentaOrigenOption.textContent())
   await modalEnviarTransferencia.botonEnviar.click()
   console.log('USUARIO VALIDO EMAIL IMPRIMIR EN TEST DE TRASNSACCION EXITOSA', TestData.usuarioValido.email)
   await expect(page.getByText(`Transferencia enviada a ${TestData.usuarioValido.email}`)).toBeVisible()
