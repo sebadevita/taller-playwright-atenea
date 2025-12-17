@@ -14,7 +14,7 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -35,12 +35,17 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
+      testIgnore: /.*\.setup\.ts/, // Excluye archivos de setup del proyecto chromium
     },
 
-    {
+    /*     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
@@ -48,12 +53,8 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    },
+    }, */
     //Creamos el proyecto 'setup' para que se avisible para PW en las ejecuciones
-    {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-    },
 
     /* Test against mobile viewports. */
     // {

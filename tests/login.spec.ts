@@ -2,13 +2,17 @@ import { test, expect } from '@playwright/test'
 import { LoginPage } from '../pages/loginPage'
 import { DashboardPage } from '../pages/dashboardPage'
 import TestData from '../data/testData.json'
+import { BackendUtils } from './utils/backendUtils'
 
 let loginPage: LoginPage
 let dashboardPage: DashboardPage
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page, request }) => {
   loginPage = new LoginPage(page)
   dashboardPage = new DashboardPage(page)
+  const userAPI = new BackendUtils(request)
+  const endpoint = 'http://localhost:6007/api/auth/signup'
+  const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioValido, false)
   await loginPage.visitarPaginaLogin()
 })
 

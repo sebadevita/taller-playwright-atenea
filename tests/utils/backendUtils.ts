@@ -8,8 +8,14 @@ export class BackendUtils {
     this.request = request
   }
 
-  async crearUsuarioAPI(endpoint: string, usuario: { nombre: string; apellido: string; email: string; password: string }) {
-    const email = 'seba' + Date.now().toString() + '@mail.com'
+  async crearUsuarioAPI(endpoint: string, usuario: { nombre: string; apellido: string; email: string; password: string }, esNuevo: boolean = true) {
+    let email: string
+
+    if (esNuevo) {
+      email = 'seba' + Date.now().toString() + '@mail.com'
+    } else {
+      email = usuario.email
+    }
 
     const response = await this.request.post(endpoint, {
       data: {

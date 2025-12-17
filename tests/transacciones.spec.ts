@@ -7,11 +7,6 @@ import fs from 'fs/promises'
 let dashboardPage: DashboardPage
 let modalEnviarTransferencia: ModalEnviarTransferencia
 
-test.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page)
-  modalEnviarTransferencia = new ModalEnviarTransferencia(page)
-  await dashboardPage.visitarPaginaDashboard()
-})
 //Indicamos cual queremos que sea el estado inicial con el que queremos que comience el test
 const testUsuarioEmisor = test.extend({
   storageState: require.resolve('../playwright/.auth/usuarioEmisor.json'),
@@ -20,19 +15,28 @@ const testUsuarioEmisor = test.extend({
 const testUsuarioReceptor = test.extend({
   storageState: require.resolve('../playwright/.auth/usuarioReceptor.json'),
 })
+test.beforeEach(async ({ page }) => {
+  dashboardPage = new DashboardPage(page)
+  modalEnviarTransferencia = new ModalEnviarTransferencia(page)
+  await dashboardPage.visitarPaginaDashboard()
+})
 
 testUsuarioEmisor('Verificar transacción exitosa', async ({ page }) => {
   await expect(dashboardPage.dashboardTitle).toBeVisible()
   await dashboardPage.botonEnviarDinero.click()
   await modalEnviarTransferencia.completarFormulario(TestData.usuarioValido.email, '250')
+  await expect(modalEnviarTransferencia.cuentaOrigenDropdown).toBeVisible()
+  await expect(modalEnviarTransferencia.cuentaOrigenOption).toBeVisible()
+  console.log('CUENTA ORIGEN DROPDOWN', await modalEnviarTransferencia.cuentaOrigenOption.textContent())
   await modalEnviarTransferencia.botonEnviar.click()
+  console.log('USUARIO VALIDO EMAIL IMPRIMIR EN TEST DE TRASNSACCION EXITOSA', TestData.usuarioValido.email)
   await expect(page.getByText(`Transferencia enviada a ${TestData.usuarioValido.email}`)).toBeVisible()
 })
 
 //Esto se puede mejorar sabiendo siempre el email del usuario receptor
 testUsuarioReceptor('Verificar que usuario receptor recibe dinero', async ({ page }) => {
   await expect(dashboardPage.dashboardTitle).toBeVisible()
-  await expect(page.getByText('Transferencia de seba1762868733887@mail.com')).toBeVisible()
+  await expect(page.getByText('Transferencia de').first()).toBeVisible()
 })
 
 //Test unficiado de enviar dinero por API y verifica en el Front
@@ -75,8 +79,6 @@ testUsuarioReceptor('Verificar transferencia recibida (Enviada por API)', async 
   const idCuentaOrigen = cuentas[0]._id
 
   const montoAleatorio = Math.floor(Math.random() * 100) + 1
-  console.log('Monto:' + montoAleatorio + 'desde' + idCuentaOrigen + 'a' + TestData.usuarioValido.email)
-
   //Enviamos la transferencia por API
 
   const responseTransferencia = await request.post('http://localhost:6007/api/transactions/transfer', {

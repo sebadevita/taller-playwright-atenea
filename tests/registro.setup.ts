@@ -24,6 +24,7 @@ setup.beforeEach(async ({ page }) => {
 
 setup('Generar usuario que envia dinero', async ({ page, request }) => {
   const userAPI = new BackendUtils(request)
+  console.log('SE EJECUTA SETUP SE EJECUTA SETUP SE EJECUTA SETUP')
   const endpoint = 'http://localhost:6007/api/auth/signup'
   const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioValido)
 
@@ -44,9 +45,21 @@ setup('Generar usuario que envia dinero', async ({ page, request }) => {
   await page.context().storageState({ path: usuarioEmisorAuthFile })
 })
 
-setup('Loguearse con usuario que recibe dinero', async ({ page, request }) => {
-  await loginPage.completarFormularioLogin(TestData.usuarioValido)
+setup('Crear y loguearse con usuario que recibe dinero', async ({ page, request }) => {
+  const userAPI = new BackendUtils(request)
+  const endpoint = 'http://localhost:6007/api/auth/signup'
+  const nuevoUsuario = await userAPI.crearUsuarioAPI(endpoint, TestData.usuarioValido, false)
+  await loginPage.completarFormularioLogin(nuevoUsuario)
   await loginPage.clickLogin()
   await expect(dashboardPage.dashboardTitle).toBeVisible()
+
+  // Crear cuenta bancaria para el usuario receptor
+  // Esto es necesario para que pueda recibir transferencias correctamente
+  await dashboardPage.botonAgregarCuenta.click()
+  await modalCrearCuenta.seleccionarTipoDeCuenta('Débito')
+  await modalCrearCuenta.completarMonto('500')
+  await modalCrearCuenta.botonCrearCuenta.click()
+  await expect(page.getByText('Cuenta creada exitosamente')).toBeVisible()
+
   await page.context().storageState({ path: usuarioReceptorAuthFile })
 })

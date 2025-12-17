@@ -7,6 +7,7 @@ export class DashboardPage {
   readonly botonEnviarDinero: Locator
   readonly descripcionesListaTransferencias: Locator
   readonly montosListaTransferecnias: Locator
+  readonly elementosListaMontoTransferencia: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -15,6 +16,7 @@ export class DashboardPage {
     this.botonEnviarDinero = page.getByTestId('boton-enviar')
     this.descripcionesListaTransferencias = page.getByTestId('descripcion-transaccion')
     this.montosListaTransferecnias = page.getByTestId('monto-transaccion')
+    this.elementosListaMontoTransferencia = page.locator('[data-testid="monto-transaccion"]')
   }
 
   async visitarPaginaDashboard() {
