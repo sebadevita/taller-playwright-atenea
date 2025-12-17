@@ -52,5 +52,14 @@ setup('Crear y loguearse con usuario que recibe dinero', async ({ page, request 
   await loginPage.completarFormularioLogin(nuevoUsuario)
   await loginPage.clickLogin()
   await expect(dashboardPage.dashboardTitle).toBeVisible()
+
+  // Crear cuenta bancaria para el usuario receptor
+  // Esto es necesario para que pueda recibir transferencias correctamente
+  await dashboardPage.botonAgregarCuenta.click()
+  await modalCrearCuenta.seleccionarTipoDeCuenta('Débito')
+  await modalCrearCuenta.completarMonto('500')
+  await modalCrearCuenta.botonCrearCuenta.click()
+  await expect(page.getByText('Cuenta creada exitosamente')).toBeVisible()
+
   await page.context().storageState({ path: usuarioReceptorAuthFile })
 })
